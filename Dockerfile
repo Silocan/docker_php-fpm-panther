@@ -6,6 +6,12 @@ ENV PANTHER_NO_SANDBOX 1
 ENV PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage'
 RUN apk add --no-cache chromium chromium-chromedriver
 
+
+RUN curl -sSLf \
+    -o /usr/local/bin/install-php-extensions \
+    https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions && \
+    chmod +x /usr/local/bin/install-php-extensions
+
 # Firefox and GeckoDriver (optional)
 ARG GECKODRIVER_VERSION=0.28.0
 RUN apk add --no-cache firefox libzip-dev git zip unzip bash curl; \
@@ -17,5 +23,9 @@ RUN wget -q https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIV
 WORKDIR /var/www
 
 COPY --link docker/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY --link docker/docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+RUN install-php-extensions xdebug intl opcache pdo gd zip bcmath xml mysqli curl calendar pdo_mysql redis mongodb-1.15.1 ldap soap;
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]
