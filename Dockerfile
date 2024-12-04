@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Chromium and ChromeDriver
 ENV PANTHER_NO_SANDBOX 1
@@ -26,6 +26,7 @@ COPY --link docker/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY --link docker/docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-RUN install-php-extensions xdebug intl opcache pdo gd zip bcmath xml mysqli curl calendar pdo_mysql redis mongodb-1.15.1 ldap soap;
+# xdebug
+RUN install-php-extensions intl opcache pdo gd zip bcmath xml mysqli curl calendar pdo_mysql redis mongodb-1.15.1 ldap soap;
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]
