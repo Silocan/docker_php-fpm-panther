@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Chromium and ChromeDriver
 ENV PANTHER_NO_SANDBOX 1
@@ -13,7 +13,7 @@ RUN curl -sSLf \
     chmod +x /usr/local/bin/install-php-extensions
 
 # Firefox and GeckoDriver (optional)
-ARG GECKODRIVER_VERSION=0.28.0
+ARG GECKODRIVER_VERSION=0.36.0
 RUN apk add --no-cache firefox libzip-dev git zip unzip bash curl; \
     docker-php-ext-install zip
 RUN wget -q https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERSION/geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz; \
@@ -26,6 +26,6 @@ COPY --link docker/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY --link docker/docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-RUN install-php-extensions xdebug intl opcache pdo gd zip bcmath xml mysqli curl calendar pdo_mysql redis mongodb-1.15.1 ldap soap;
+RUN install-php-extensions bcmath calendar curl gd intl ldap mongodb mysqli opcache pdo pdo_mysql redis soap xdebug xml zip;
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]
